@@ -17,8 +17,7 @@ type recipeList [NMAX]Recipe
 
 func main() {
 	var recipes recipeList
-	var choice int
-	var amount int
+	var choice, amount int
 
 	for {
 		fmt.Println("Culinary Recipe Management and Search Application (MyRecipe)")
@@ -76,14 +75,13 @@ func addRecipe(recipes *recipeList, n *int) {
 	fmt.Scan(&recipes[*n].steps)
 	recipes[*n].searchCount = 0
 	*n++
-	fmt.Println("Recipe added successfully!")
+	fmt.Println("Recipe added successfully.")
 }
 
 func editRecipe(recipes *recipeList, n int) {
 	var title string
-	var choice int
-	var ingredientNumber int
-
+	var choice, ingredientNumber int
+	
 	displayRecipes(recipes, n)
 	fmt.Print("Enter the name of the recipe to edit: ")
 	fmt.Scan(&title)
@@ -166,13 +164,13 @@ func deleteRecipe(recipes *recipeList, n *int) {
 func displayRecipes(recipes *recipeList, n int) {
 	var i, choice int
 	if n == 0 {
-		fmt.Println("No recipes to display. Add some recipes first!")
+		fmt.Println("No recipes to display. Please add some recipes.")
 		return
 	}
 
 	fmt.Println("How would you like to see the recipes?")
-	fmt.Println("1. Sort by name (ascending)")
-	fmt.Println("2. Sort by cooking time (ascending)")
+	fmt.Println("1. Sort by name (Ascending)")
+	fmt.Println("2. Sort by cooking time (Ascending)")
 	fmt.Print("Enter your choice: ")
 	fmt.Scan(&choice)
 
@@ -212,13 +210,13 @@ func SortbyTimeAscending(recipes *recipeList, n int) {
 	//Insertion Sort
 	var i, j int
 	for i = 1; i < n; i++ {
-		key := recipes[i]
+		temp := recipes[i]
 		j = i - 1
-		for j >= 0 && recipes[j].cookingTime > key.cookingTime {
+		for j >= 0 && recipes[j].cookingTime > temp.cookingTime {
 			recipes[j+1] = recipes[j]
 			j--
 		}
-		recipes[j+1] = key
+		recipes[j+1] = temp
 	}
 }
 
@@ -249,6 +247,7 @@ func searchRecipe(recipes *recipeList, n int) {
 }
 
 func findIndexRecipe(recipes *recipeList, n int, title string) int {
+	// Function to find where the index is located
 	var find int = -1
 	for i := 0; i < n; i++ {
 		if recipes[i].name == title {
@@ -259,10 +258,11 @@ func findIndexRecipe(recipes *recipeList, n int, title string) int {
 }
 
 func viewStatistics(recipes *recipeList, n int) {
-
 }
 
 func printRecipeDetails(recipe Recipe) {
+	// Print all the details of the recipe
+	fmt.Println()
 	fmt.Printf("Recipe: %s\n", recipe.name)
 	fmt.Printf("Category: %s\n", recipe.category)
 	fmt.Printf("Cooking time: %d minutes\n", recipe.cookingTime)
