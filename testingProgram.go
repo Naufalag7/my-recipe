@@ -222,26 +222,22 @@ func SortbyTimeAscending(recipes *recipeList, n int) {
 
 func searchRecipe(recipes *recipeList, n int) {
 	var ingredient string
-	var found, foundRecipe bool
 	var i, j int
 	fmt.Print("Enter ingredient to search for: ")
 	fmt.Scan(&ingredient)
 
-	found = false
+	found = 0
 	for i = 0; i < n; i++ {
-		j = 0
-		foundRecipe = false
-		for j < recipes[i].countIngredients && !foundRecipe {
+		for j = 0; j < recipes[i].countIngredients; j++ {
 			if recipes[i].ingredients[j] == ingredient {
 				recipes[i].searchCount++
 				printRecipeDetails(recipes[i])
-				found = true
-				foundRecipe = true
+				found++
+				j = recipes[i].countIngredients
 			}
-			j++
 		}
 	}
-	if !found {
+	if found = 0 {
 		fmt.Println("Ingredient not found in any recipe.")
 	}
 }
