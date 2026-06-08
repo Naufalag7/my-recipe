@@ -278,6 +278,15 @@ func viewStatistics(recipes recipeList, n int) {
 			maxIdx = i
 		}
 	}
+
+	fmt.Println("\n=== Statistics ===")
+	fmt.Printf("Total Recipes: %d\n", n)
+
+	if recipes[maxIdx].searchCount > 0 {
+		fmt.Printf("Most Searched Recipe: %v (Searched %v times)\n", recipes[maxIdx].name, recipes[maxIdx].searchCount)
+	} else {
+		fmt.Println("No search history yet")
+	}
 }
 
 /* Procedure to print all the details
