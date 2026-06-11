@@ -10,11 +10,13 @@ type Recipe struct {
 	name             string
 	category         string
 	ingredients      [100]string
-	steps            string
+	steps            [100]string
 	countIngredients int
+	countSteps       int
 	cookingTime      int
 	searchCount      int
 }
+
 type recipeList [NMAX]Recipe
 
 func main() {
@@ -22,7 +24,9 @@ func main() {
 	var choice, amount int
 
 	for {
-		fmt.Println("Culinary Recipe Management and Search Application (MyRecipe)") //Please improve this specific line and make it more obvious to look at
+		fmt.Println("\n=======================================================")
+		fmt.Println("   CULINARY RECIPE MANAGEMENT & SEARCH APP (MyRecipe)") //Please improve this specific line and make it more obvious to look at
+		fmt.Println("=======================================================")
 		fmt.Println("1. Add recipe")
 		fmt.Println("2. Edit recipe")
 		fmt.Println("3. Delete recipe")
@@ -30,6 +34,7 @@ func main() {
 		fmt.Println("5. Display all recipes")
 		fmt.Println("6. View Statistics")
 		fmt.Println("7. Exit")
+		fmt.Println("========================================================")
 		fmt.Print("Enter your choice: ")
 		fmt.Scan(&choice)
 
@@ -47,15 +52,16 @@ func main() {
 		case 6:
 			viewStatistics(recipes, amount)
 		case 7:
-			fmt.Println("Exiting the application. Goodbye! 😘😘😘")
+			fmt.Println("\nExiting the application. Goodbye! 😘😘😘")
 			return
 		default:
-			fmt.Println("Invalid choice. Please try again.")
+			fmt.Println("\nInvalid choice. Please try again.\n")
 		}
 	}
 }
 
 func addRecipe(recipes *recipeList, n *int) {
+	var i int
 	if *n >= NMAX {
 		fmt.Println("Recipe list is full. Cannot add more recipes.")
 		return
@@ -69,38 +75,51 @@ func addRecipe(recipes *recipeList, n *int) {
 	fmt.Scan(&recipes[*n].cookingTime)
 	fmt.Print("Enter number of ingredients: ")
 	fmt.Scan(&recipes[*n].countIngredients)
-	for i := 0; i < recipes[*n].countIngredients; i++ {
+	for i = 0; i < recipes[*n].countIngredients; i++ {
 		fmt.Printf("Ingredient %d: ", i+1)
 		fmt.Scan(&recipes[*n].ingredients[i])
 	}
 
-	fmt.Print("Cooking steps: ")
-	fmt.Scan(&recipes[*n].steps)
+	fmt.Print("Enter number of cooking steps: ")
+	fmt.Scan(&recipes[*n].countSteps)
+	for i = 0; i < recipes[*n].countSteps; i++ {
+		fmt.Printf("Step %d: ", i+1)
+		fmt.Scan(&recipes[*n].steps[i])
+	}
 	recipes[*n].searchCount = 0
 	*n++
-	fmt.Println("Recipe added successfully.")
+	fmt.Println("\n[Recipe added successfully.]")
 }
 
 func editRecipe(recipes *recipeList, n int) {
 	var title string
-	var choice, ingredientNumber int
+	var choice, ingredientNumber, i int
 
-	displayRecipes(recipes, n)
-	fmt.Print("Enter the name of the recipe to edit: ")
+	if n == 0 {
+		fmt.Println("\n[No recipes to edit. Please add some recipes first.]")
+		return
+	}
+
+	displayRecipesName(recipes, n)
+	fmt.Println("=======================================")
+	fmt.Print("\nEnter the name of the recipe to edit: ")
 	fmt.Scan(&title)
 	index := findIndexRecipe(recipes, n, title)
 	if index == -1 {
-		fmt.Println("Recipe not found.")
+		fmt.Println("\n[Recipe not found.]")
 		return
 	}
 
 	for {
+		fmt.Println("\n=======================================")
 		fmt.Println("Edit recipe:", recipes[index].name)
+		fmt.Println("=======================================")
 		fmt.Println("1. Change title")
 		fmt.Println("2. Change ingredient")
 		fmt.Println("3. Change cooking time")
 		fmt.Println("4. Change cooking steps")
 		fmt.Println("5. Done")
+		fmt.Println("=======================================")
 		fmt.Print("Enter your choice: ")
 		fmt.Scan(&choice)
 
@@ -114,7 +133,7 @@ func editRecipe(recipes *recipeList, n int) {
 				fmt.Println("This recipe has no ingredients.")
 			} else {
 				fmt.Println("Current ingredients:")
-				for i := 0; i < recipes[index].countIngredients; i++ {
+				for i = 0; i < recipes[index].countIngredients; i++ {
 					fmt.Printf("%d. %s\n", i+1, recipes[index].ingredients[i])
 				}
 				fmt.Print("Enter ingredient number to change: ")
@@ -148,7 +167,14 @@ func editRecipe(recipes *recipeList, n int) {
 func deleteRecipe(recipes *recipeList, n *int) {
 	var title string
 
-	fmt.Print("Enter title to delete: ")
+	if *n == 0 {
+		fmt.Println("\n[No recipes to delete. Please add some recipes first.]")
+		return
+	}
+	
+	displayRecipesName(recipes, *n)
+	fmt.Println("=======================================")
+	fmt.Print("\nEnter title to delete: ")
 	fmt.Scan(&title)
 	index := findIndexRecipe(recipes, *n, title)
 
@@ -157,24 +183,46 @@ func deleteRecipe(recipes *recipeList, n *int) {
 			recipes[i] = recipes[i+1]
 		}
 		*n--
-		fmt.Println("Recipe is deleted")
+		fmt.Println("\n[Recipe is deleted]")
 	} else {
-		fmt.Println("Recipe not found")
+		fmt.Println("\n[Recipe not found]")
 	}
 }
 
 /*Procedure to display the recipes that are listed in
 the array aswell as sorting (Ascending/Descending) */
-func displayRecipes(recipes *recipeList, n int) {
-	var i, choice int
+
+func displayRecipesName(recipes *recipeList, n int) {
+	var i int
 	if n == 0 {
-		fmt.Println("No recipes to display. Please add some recipes.")
+		fmt.Println("\n[No recipes to display. Please add some recipes.]")
 		return
 	}
 
-	fmt.Println("How would you like to see the recipes?")
+	fmt.Println("\n=======================================")
+	fmt.Println("           AVAILABLE RECIPES           ")
+	fmt.Println("=======================================")
+	for i = 0; i < n; i++ {
+		fmt.Printf("%d. %s\n", i+1, recipes[i].name)
+	}
+}
+
+func displayRecipes(recipes *recipeList, n int) {
+	var i, choice int
+	if n == 0 {
+		fmt.Println("\n[No recipes to display. Please add some recipes.]")
+		return
+	}
+
+	fmt.Println("\n=======================================")
+	fmt.Println("         RECIPE DISPLAY OPTIONS        ")
+	fmt.Println("=======================================")
 	fmt.Println("1. Sort by name (Ascending)")
-	fmt.Println("2. Sort by cooking time (Ascending)")
+	fmt.Println("2. Sort by name (Descending)")
+	fmt.Println("3. Sort by cooking time (Ascending)")
+	fmt.Println("4. Sort by cooking time (Descending)")
+	fmt.Println("=======================================")
+
 	fmt.Print("Enter your choice: ")
 	fmt.Scan(&choice)
 
@@ -182,7 +230,11 @@ func displayRecipes(recipes *recipeList, n int) {
 	case 1:
 		SortbyNameAscending(recipes, n)
 	case 2:
+		SortbyNameDescending(recipes, n)
+	case 3:
 		SortbyTimeAscending(recipes, n)
+	case 4:
+		SortbyTimeDescending(recipes, n)
 	default:
 		fmt.Println("Invalid choice. Please try again.")
 		return
@@ -211,6 +263,23 @@ func SortbyNameAscending(recipes *recipeList, n int) {
 	}
 }
 
+func SortbyNameDescending(recipes *recipeList, n int) {
+	//Selection Sort
+	//Please make the Descending one aswell
+	var i, j, minIdx int
+	for i = 0; i < n-1; i++ {
+		minIdx = i
+		for j = i + 1; j < n; j++ {
+			if recipes[j].name > recipes[minIdx].name {
+				minIdx = j
+			}
+		}
+		temp := recipes[i]
+		recipes[i] = recipes[minIdx]
+		recipes[minIdx] = temp
+	}
+}
+
 func SortbyTimeAscending(recipes *recipeList, n int) {
 	//Insertion Sort
 	//Please make the Descending one aswell
@@ -219,6 +288,20 @@ func SortbyTimeAscending(recipes *recipeList, n int) {
 		temp := recipes[i]
 		j = i - 1
 		for j >= 0 && recipes[j].cookingTime > temp.cookingTime {
+			recipes[j+1] = recipes[j]
+			j--
+		}
+		recipes[j+1] = temp
+	}
+}
+
+func SortbyTimeDescending(recipes *recipeList, n int) {
+	//Insertion Sort
+	var i, j int
+	for i = 1; i < n; i++ {
+		temp := recipes[i]
+		j = i - 1
+		for j >= 0 && recipes[j].cookingTime < temp.cookingTime {
 			recipes[j+1] = recipes[j]
 			j--
 		}
@@ -268,7 +351,7 @@ func viewStatistics(recipes recipeList, n int) {
 	var i, maxIdx int
 
 	if n == 0 {
-		fmt.Println("No recipe data available yet")
+		fmt.Println("\n[No recipe data available yet]")
 		return
 	}
 
@@ -285,7 +368,7 @@ func viewStatistics(recipes recipeList, n int) {
 	if recipes[maxIdx].searchCount > 0 {
 		fmt.Printf("Most Searched Recipe: %v (Searched %v times)\n", recipes[maxIdx].name, recipes[maxIdx].searchCount)
 	} else {
-		fmt.Println("No search history yet")
+		fmt.Println("\n[No search history yet]")
 	}
 }
 
