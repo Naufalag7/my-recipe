@@ -25,7 +25,7 @@ func main() {
 
 	for {
 		fmt.Println("\n=======================================================")
-		fmt.Println("   CULINARY RECIPE MANAGEMENT & SEARCH APP (MyRecipe)") //Please improve this specific line and make it more obvious to look at
+		fmt.Println("   CULINARY RECIPE MANAGEMENT & SEARCH APP (MyRecipe)") 
 		fmt.Println("=======================================================")
 		fmt.Println("1. Add recipe")
 		fmt.Println("2. Edit recipe")
@@ -66,7 +66,6 @@ func addRecipe(recipes *recipeList, n *int) {
 		fmt.Println("Recipe list is full. Cannot add more recipes.")
 		return
 	}
-	//Please improve UI addRecipe function and reduce the repetitive word of "Enter"
 	fmt.Print("Enter recipe name: ")
 	fmt.Scan(&recipes[*n].name)
 	fmt.Print("Enter category: ")
