@@ -52,8 +52,7 @@ func main() {
 		case 4:
 			search(&recipes, amount)
 		case 5:
-			displayRecipesName(&recipes, amount)
-			displayRecipesNameSubMenu(&recipes, amount)
+			displayRecipes(&recipes, amount)
 		case 6:
 			viewStatistics(recipes, amount)
 		case 7:
@@ -243,7 +242,7 @@ func displayRecipesName(recipes *recipeList, n int) {
 /* After showing the simple name list, we trigger this small menu.
 It gives the user a chance to quickly sort the names alphabetically (A-Z or Z-A) 
 to make it easier to read, or they can just go back to the main menu. */
-func displayRecipesNameSubMenu(recipes *recipeList, n int) {
+func displayRecipesSubMenu(recipes *recipeList, n int) {
 	var choice string
 	var status bool
 	
@@ -271,11 +270,15 @@ func displayRecipesNameSubMenu(recipes *recipeList, n int) {
 	}
 }
 
-/* We use this when the user wants to see everything about the recipes.
-It gives them options to sort the data first, either by name or by how fast it takes to cook.
-After sorting, it loops through everything and prints the full details. */
+
+/* We use this when the user wants to see the full details of the recipes.
+First, it immediately prints everything exactly as it is currently saved.
+Then, it opens a looping sub-menu at the bottom so the user can keep 
+sorting by Name or Time until they choose to go back to the Main Menu. */
 func displayRecipes(recipes *recipeList, n int) {
-	var i, choice int
+	var i int
+	var choice, pick string
+	var status bool
 	
 	if n == 0 {
 		fmt.Println("\n[No recipes to display. Please add some recipes.]")
@@ -283,36 +286,58 @@ func displayRecipes(recipes *recipeList, n int) {
 	}
 
 	fmt.Println("\n=======================================")
-	fmt.Println("        RECIPE DISPLAY OPTIONS         ")
+	fmt.Println("           ALL RECIPES DETAILS         ")
 	fmt.Println("=======================================")
-	fmt.Println("1. Sort by name (Ascending)")
-	fmt.Println("2. Sort by name (Descending)")
-	fmt.Println("3. Sort by cooking time (Ascending)")
-	fmt.Println("4. Sort by cooking time (Descending)")
-	fmt.Println("=======================================")
-
-	fmt.Print("Enter your choice: ")
-	fmt.Scan(&choice)
-
-	switch choice {
-	case 1:
-		SortbyNameAscending(recipes, n)
-	case 2:
-		SortbyNameDescending(recipes, n)
-	case 3:
-		SortbyTimeAscending(recipes, n)
-	case 4:
-		SortbyTimeDescending(recipes, n)
-	default:
-		fmt.Println("Invalid choice. Please try again.")
-		return
-	}
-
 	for i = 0; i < n; i++ {
 		printRecipeDetails(recipes[i])
 	}
-	fmt.Println()
+
+	status = true
+	for status {
+		fmt.Println("=======================================")
+		fmt.Print("Sort by Name [N], Time [T], Menu [M] : ")
+		fmt.Scan(&choice)
+
+		switch choice {
+		case "N", "n" :
+				fmt.Print("Ascending [A] or Descending [D] : ")
+				fmt.Scan(&pick)
+				switch pick {
+				case "A", "a" :
+					for i = 0 ; i < n ; i ++ {
+						SortbyNameAscending(recipes, n)
+						printRecipeDetails(recipes[i])
+					}
+				case "D", "d" :
+					for i = 0 ; i < n ; i ++ {
+						SortbyNameDescending(recipes, n)
+						printRecipeDetails(recipes[i])
+					}
+				}
+		case "T", "t" :
+				fmt.Print("Ascending [A] or Descending [D] : ")
+				fmt.Scan(&pick)
+				switch pick {
+				case "A", "a" :
+					SortbyTimeAscending(recipes, n)
+					for i = 0 ; i < n ; i ++ {
+						
+						printRecipeDetails(recipes[i])
+					}
+				case "D", "d" :
+					SortbyTimeDescending(recipes, n)
+					for i = 0 ; i < n ; i ++ {
+						printRecipeDetails(recipes[i])
+					}
+				}
+		case "M", "m":
+			status = false
+		default:
+			fmt.Println("\n[Invalid choice. Please try again.]")
+		}
+	}
 }
+	
 
 /* This is a standard Selection Sort algorithm.
 We use it to arrange the recipe list alphabetically from A to Z based on the recipe name. */
@@ -535,7 +560,7 @@ func printRecipeDetails(recipe Recipe) {
 	for i = 0; i < recipe.countSteps; i++ {
 		fmt.Printf("  %d. %s\n", i+1, recipe.steps[i])
 	}
-	fmt.Println("-------------------------------")
+	fmt.Print("=")
 }
 
 /* Binary search has a strict rule: the data must be sorted first before searching.
