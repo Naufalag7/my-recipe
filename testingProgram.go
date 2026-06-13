@@ -93,7 +93,7 @@ func addRecipe(recipes *recipeList, n *int) {
 
 func editRecipe(recipes *recipeList, n int) {
 	var title string
-	var choice, ingredientNumber, i int
+	var choice, ingredientNumber, i, index int
 
 	if n == 0 {
 		fmt.Println("\n[No recipes to edit. Please add some recipes first.]")
@@ -105,7 +105,7 @@ func editRecipe(recipes *recipeList, n int) {
 	fmt.Print("\nEnter the name of the recipe to edit: ")
 	fmt.Scan(&title)
 	SortbyNameAscending(recipes, n)
-	index := findIndexRecipe(recipes, n, title)
+	index = findIndexRecipe(recipes, n, title)
 	if index == -1 {
 		fmt.Println("\n[Recipe not found.]")
 		return
@@ -170,6 +170,7 @@ func editRecipe(recipes *recipeList, n int) {
 
 func deleteRecipe(recipes *recipeList, n *int) {
 	var title string
+	var index, i int
 
 	if *n == 0 {
 		fmt.Println("\n[No recipes to delete. Please add some recipes first.]")
@@ -181,10 +182,10 @@ func deleteRecipe(recipes *recipeList, n *int) {
 	fmt.Print("\nEnter title to delete: ")
 	fmt.Scan(&title)
 	SortbyNameAscending(recipes, *n)
-	index := findIndexRecipe(recipes, *n, title)
+	index = findIndexRecipe(recipes, *n, title)
 
 	if index != -1 {
-		for i := index; i < *n-1; i++ {
+		for i = index; i < *n-1; i++ {
 			recipes[i] = recipes[i+1]
 		}
 		*n--
@@ -278,6 +279,7 @@ func SortbyNameAscending(recipes *recipeList, n int) {
 	//Selection Sort
 	//Please make the Descending one aswell
 	var i, j, minIdx int
+	var temp Recipe
 	for i = 0; i < n-1; i++ {
 		minIdx = i
 		for j = i + 1; j < n; j++ {
@@ -285,7 +287,7 @@ func SortbyNameAscending(recipes *recipeList, n int) {
 				minIdx = j
 			}
 		}
-		temp := recipes[i]
+		temp = recipes[i]
 		recipes[i] = recipes[minIdx]
 		recipes[minIdx] = temp
 	}
@@ -295,6 +297,7 @@ func SortbyNameDescending(recipes *recipeList, n int) {
 	//Selection Sort
 	//Please make the Descending one aswell
 	var i, j, minIdx int
+	var temp Recipe
 	for i = 0; i < n-1; i++ {
 		minIdx = i
 		for j = i + 1; j < n; j++ {
@@ -302,7 +305,7 @@ func SortbyNameDescending(recipes *recipeList, n int) {
 				minIdx = j
 			}
 		}
-		temp := recipes[i]
+		temp = recipes[i]
 		recipes[i] = recipes[minIdx]
 		recipes[minIdx] = temp
 	}
@@ -312,8 +315,9 @@ func SortbyTimeAscending(recipes *recipeList, n int) {
 	//Insertion Sort
 	//Please make the Descending one aswell
 	var i, j int
+	var temp Recipe
 	for i = 1; i < n; i++ {
-		temp := recipes[i]
+		temp = recipes[i]
 		j = i - 1
 		for j >= 0 && recipes[j].cookingTime > temp.cookingTime {
 			recipes[j+1] = recipes[j]
@@ -326,8 +330,9 @@ func SortbyTimeAscending(recipes *recipeList, n int) {
 func SortbyTimeDescending(recipes *recipeList, n int) {
 	//Insertion Sort
 	var i, j int
+	var temp Recipe
 	for i = 1; i < n; i++ {
-		temp := recipes[i]
+		temp = recipes[i]
 		j = i - 1
 		for j >= 0 && recipes[j].cookingTime < temp.cookingTime {
 			recipes[j+1] = recipes[j]
@@ -455,13 +460,13 @@ func viewStatistics(recipes recipeList, n int) {
 /* Procedure to print all the details
 of the recipe that are listed/added */
 func printRecipeDetails(recipe Recipe) {
-
+	var i int
 	fmt.Println()
 	fmt.Printf("Recipe: %s\n", recipe.name)
 	fmt.Printf("Category: %s\n", recipe.category)
 	fmt.Printf("Cooking time: %d minutes\n", recipe.cookingTime)
 	fmt.Printf("Ingredients:\n")
-	for i := 0; i < recipe.countIngredients; i++ {
+	for i = 0; i < recipe.countIngredients; i++ {
 		fmt.Printf("  - %s\n", recipe.ingredients[i])
 	}
 	fmt.Println("-------------------------------")
