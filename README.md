@@ -189,7 +189,7 @@ type recipeList [NMAX]Recipe
 
 This project demonstrates:
 
-* Array-based data management
+* Array based data management
 * Struct implementation in Go
 * CRUD operations
 * Sequential Search
@@ -197,10 +197,6 @@ This project demonstrates:
 * Selection Sort
 * Insertion Sort
 * Console application development
-* Basic data analytics and reporting
+* Basic data analytics 
 
 ---
-
-## License
-
-Created for academic purposes.
