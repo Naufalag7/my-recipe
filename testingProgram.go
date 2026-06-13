@@ -25,12 +25,12 @@ func main() {
 
 	for {
 		fmt.Println("\n=======================================================")
-		fmt.Println("   CULINARY RECIPE MANAGEMENT & SEARCH APP (MyRecipe)") 
+		fmt.Println("   CULINARY RECIPE MANAGEMENT & SEARCH APP (MyRecipe)")
 		fmt.Println("=======================================================")
 		fmt.Println("1. Add recipe")
 		fmt.Println("2. Edit recipe")
 		fmt.Println("3. Delete recipe")
-		fmt.Println("4. Search recipe")
+		fmt.Println("4. Search by ingredient")
 		fmt.Println("5. Display all recipes")
 		fmt.Println("6. View Statistics")
 		fmt.Println("7. Exit")
@@ -46,9 +46,10 @@ func main() {
 		case 3:
 			deleteRecipe(&recipes, &amount)
 		case 4:
-			searchByRecipe(&recipes, amount)
+			search(&recipes, amount)
 		case 5:
-			displayRecipes(&recipes, amount)
+			displayRecipesName(&recipes, amount)
+			displayRecipesNameSubMenu(&recipes, amount)
 		case 6:
 			viewStatistics(recipes, amount)
 		case 7:
@@ -174,7 +175,7 @@ func deleteRecipe(recipes *recipeList, n *int) {
 		fmt.Println("\n[No recipes to delete. Please add some recipes first.]")
 		return
 	}
-	
+
 	displayRecipesName(recipes, *n)
 	fmt.Println("=======================================")
 	fmt.Print("\nEnter title to delete: ")
@@ -208,6 +209,29 @@ func displayRecipesName(recipes *recipeList, n int) {
 	fmt.Println("=======================================")
 	for i = 0; i < n; i++ {
 		fmt.Printf("%d. %s\n", i+1, recipes[i].name)
+	}
+}
+
+func displayRecipesNameSubMenu(recipes *recipeList, n int) {
+	var choice string
+	var status bool
+	status = true
+	for status {
+		fmt.Println("=======================================")
+		fmt.Print(" Ascending [A], Descending [D], Main Menu [M] : ")
+		fmt.Scan(&choice)
+		switch choice {
+		case "A", "a":
+			SortbyNameAscending(recipes, n)
+			displayRecipesName(recipes, n)
+		case "D", "d":
+			SortbyNameDescending(recipes, n)
+			displayRecipesName(recipes, n)
+		case "M", "m":
+			status = false
+		default:
+			fmt.Println("Invalid choice. Please try again.")
+		}
 	}
 }
 
@@ -313,26 +337,23 @@ func SortbyTimeDescending(recipes *recipeList, n int) {
 	}
 }
 
-func searchByRecipe(recipes *recipeList, n int) {
-	var ingredient string
-	var i, j, found int
-
-	fmt.Print("Enter ingredient to search for: ")
-	fmt.Scan(&ingredient)
-
-	found = 0
-	for i = 0; i < n; i++ {
-		for j = 0; j < recipes[i].countIngredients; j++ {
-			if recipes[i].ingredients[j] == ingredient {
-				recipes[i].searchCount++
-				printRecipeDetails(recipes[i])
-				found++
-				j = recipes[i].countIngredients
-			}
+func search(recipes *recipeList, n int) {
+	var choice string
+	var status bool
+	status = true
+	for status {
+		fmt.Printf("Search by: Sequential [S], Binary [B], Done [D]\n")
+		fmt.Scan(&choice)
+		switch choice {
+		case "S", "s":
+			searchByIngredientSequential(recipes, n)
+		case "B", "b":
+			searchByIngredientBinary(recipes, n)
+		case "D", "d":
+			status = false
+		default:
+			fmt.Println("Invalid search method. Please try again.")
 		}
-	}
-	if found == 0 {
-		fmt.Println("Ingredient not found in any recipe.")
 	}
 }
 
@@ -360,27 +381,74 @@ func findIndexRecipe(recipes *recipeList, n int, title string) int {
 recipes per ingredient category and a list of
 the most frequently searched menus */
 func viewStatistics(recipes recipeList, n int) {
-	var i, maxIdx int
+	var i, j, categoryTotal, maxIdx int
+	var categories [NMAX]string
+	var categoryCounts [NMAX]int
+	var sorted [NMAX]Recipe
+	var found, hasSearch bool
+	var temp Recipe
 
 	if n == 0 {
 		fmt.Println("\n[No recipe data available yet]")
 		return
 	}
 
-	maxIdx = 0
-	for i = 1; i < n; i++ {
-		if recipes[i].searchCount > recipes[maxIdx].searchCount {
-			maxIdx = i
-		}
-	}
-
 	fmt.Println("\n=== Statistics ===")
 	fmt.Printf("Total Recipes: %d\n", n)
 
-	if recipes[maxIdx].searchCount > 0 {
-		fmt.Printf("Most Searched Recipe: %v (Searched %v times)\n", recipes[maxIdx].name, recipes[maxIdx].searchCount)
+	//Count recipes per category
+	categoryTotal = 0
+	for i = 0; i < n; i++ {
+		found = false
+		for j = 0; j < categoryTotal; j++ {
+			if categories[j] == recipes[i].category {
+				categoryCounts[j]++
+				found = true
+			}
+		}
+		if !found {
+			categories[categoryTotal] = recipes[i].category
+			categoryCounts[categoryTotal] = 1
+			categoryTotal++
+		}
+	}
+
+	fmt.Println("\n=== Recipes per Category ===")
+	for i = 0; i < categoryTotal; i++ {
+		fmt.Printf("  %s: %d recipe(s)\n", categories[i], categoryCounts[i])
+	}
+
+	//List most frequently searched recipes
+	hasSearch = false
+	for i = 0; i < n; i++ {
+		if recipes[i].searchCount > 0 {
+			hasSearch = true
+		}
+	}
+
+	fmt.Println("\n=== Most Searched Recipes ===")
+	if !hasSearch {
+		fmt.Println("[No search history yet]")
 	} else {
-		fmt.Println("\n[No search history yet]")
+		for i = 0; i < n; i++ {
+			sorted[i] = recipes[i]
+		}
+		for i = 0; i < n-1; i++ {
+			maxIdx = i
+			for j = i + 1; j < n; j++ {
+				if sorted[j].searchCount > sorted[maxIdx].searchCount {
+					maxIdx = j
+				}
+			}
+			temp = sorted[i]
+			sorted[i] = sorted[maxIdx]
+			sorted[maxIdx] = temp
+		}
+		for i = 0; i < n; i++ {
+			if sorted[i].searchCount > 0 {
+				fmt.Printf("  %d. %s - searched %d time(s)\n", i+1, sorted[i].name, sorted[i].searchCount)
+			}
+		}
 	}
 }
 
@@ -397,4 +465,75 @@ func printRecipeDetails(recipe Recipe) {
 		fmt.Printf("  - %s\n", recipe.ingredients[i])
 	}
 	fmt.Println("-------------------------------")
+}
+
+//helper function
+func checkIngredient(recipe Recipe, ingredient string) bool {
+	var i int
+	var found bool
+	found = false
+	for i = 0; i < recipe.countIngredients; i++ {
+		if recipe.ingredients[i] == ingredient {
+			found = true
+		}
+	}
+	return found
+}
+
+func sortByIngredientsAscending(recipes *recipeList, n int) {
+	var i, j int
+	var temp Recipe
+	for i = 0; i < n-1; i++ {
+		for j = 0; j < n-i-1; j++ {
+			if recipes[j].countIngredients > recipes[j+1].countIngredients {
+				temp = recipes[j]
+				recipes[j] = recipes[j+1]
+				recipes[j+1] = temp
+			}
+		}
+	}
+}
+
+func searchByIngredientSequential(recipes *recipeList, n int) { //sequential search
+	var ingredient string
+	var found, i int
+	found = 0
+	fmt.Print("Enter ingredient to search [Use _ for spacing]: ")
+	fmt.Scan(&ingredient)
+	for i = 0; i < n; i++ {
+		if checkIngredient(recipes[i], ingredient) {
+			recipes[i].searchCount++
+			printRecipeDetails(recipes[i])
+			found++
+		}
+	}
+	if found == 0 {
+		fmt.Println("Ingredient not found in any recipe.")
+	}
+}
+
+func searchByIngredientBinary(recipes *recipeList, n int) { //binary search
+	var ingredient string
+	var found, mid, left, right int
+	found = 0
+	fmt.Print("Enter ingredient to search [Use _ for spacing]: ")
+	fmt.Scan(&ingredient)
+	sortByIngredientsAscending(recipes, n)
+	left = 0
+	right = n - 1
+	for left <= right {
+		mid = left + (right-left)/2
+		if checkIngredient(recipes[mid], ingredient) {
+			recipes[mid].searchCount++
+			printRecipeDetails(recipes[mid])
+			found++
+		} else if recipes[mid].ingredients[0] < ingredient {
+			left = mid + 1
+		} else {
+			right = mid - 1
+		}
+	}
+	if found == 0 {
+		fmt.Println("Ingredient not found in any recipe.")
+	}
 }
