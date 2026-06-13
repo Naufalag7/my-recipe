@@ -1,190 +1,211 @@
-```markdown
-# 🍳 ResepKu - Culinary Recipe Management App
+# ResepKu - Culinary Recipe Management App
 
-A console-based culinary recipe management application built with Go. It manages food recipes, records ingredients and cooking steps, tracks the most searched menus, and demonstrates classic searching and sorting algorithms in a real-world use case.
+A console-based recipe management application built with Go that demonstrates fundamental data structures, searching algorithms, and sorting algorithms through a real-world culinary use case.
 
-## 👥 Member Group
+## Team Members
 
-* **Naufal Abdurrahman Gumelar** * **Role:** Lead Developer, Logic Architecture, and Code Review.
-  * **Features:** Array Structuring, Binary/Sequential Search logic, Edit & Delete constraints, View Statistics logic.
-* **Achmad Ramadhanu Putra Abdi**
-  * **Role:** Co-Developer, UI/UX Console Formatting, and Algorithm Tester.
-  * **Features:** Selection/Insertion Sort implementation, Menu Navigation loop, Display formatting, Documentation.
+### Naufal Abdurrahman Gumelar
 
-> *Created for the "Algoritma Pemrograman 2" Final Project at Telkom University.*
+**Role:** Lead Developer, Logic Architecture, Code Review
 
----
+**Contributions:**
 
-## 📖 Description
+* Data structure design and array management
+* Sequential Search and Binary Search implementation
+* Edit and Delete operation constraints
+* Statistics and analytics features
 
-ResepKu is a data-driven application for managing and finding cooking ideas based on available ingredients. It stores recipe profiles, ingredient lists, and cooking steps in local memory, then processes them using fundamental sorting and searching algorithms.
+### Achmad Ramadhanu Putra Abdi
 
-**Target Users:**
-* Cooking enthusiasts looking to save their personal recipes.
-* General public who wants to look up meal ideas based on a specific main ingredient they currently have.
+**Role:** Co-Developer, UI/UX Formatting, Algorithm Testing
 
-## ✨ Features
+**Contributions:**
 
-| Feature | Description |
-| :--- | :--- |
-| **Recipe Management** | View, add, delete, and update recipe data (Title, Category, Ingredients, Steps, and Time). |
-| **Advanced Sorting** | Sort the displayed recipes either alphabetically (A-Z / Z-A) or by cooking duration (Fastest / Longest). |
-| **Ingredient Search** | Find specific recipes based on their *Main Ingredient* using different search algorithms. |
-| **Data Statistics** | View the total recipes available per category and a leaderboard of the most frequently searched recipes. |
+* Selection Sort and Insertion Sort implementation
+* Menu navigation and application flow
+* Console display formatting
+* Documentation and testing
+
+> Final Project for Algoritma Pemrograman 2 - Telkom University
 
 ---
 
-## 🚀 Getting Started
+## Overview
+
+ResepKu helps users manage and search cooking recipes based on available ingredients. The application stores recipe data in memory and applies classic searching and sorting algorithms to support efficient data retrieval and organization.
+
+### Key Features
+
+* **Recipe Management**
+
+  * Add, edit, delete, and view recipes
+  * Manage titles, categories, ingredients, cooking steps, and cooking duration
+
+* **Sorting Algorithms**
+
+  * Sort recipes alphabetically (A-Z / Z-A)
+  * Sort recipes by cooking time (fastest to longest)
+
+* **Ingredient Search**
+
+  * Search recipes by main ingredient
+  * Supports Sequential Search and Binary Search
+
+* **Statistics Dashboard**
+
+  * Recipe count by category
+  * Most searched recipe leaderboard
+
+---
+
+## Getting Started
 
 ### Requirements
-* Go 1.20 or later installed on your machine.
+
+* Go 1.20 or later
 
 ### Run the Application
-```bash
-# Clone the repository
-git clone [https://github.com/yourusername/resepku-golang-app.git](https://github.com/yourusername/resepku-golang-app.git)
 
-# Navigate to the directory
+```bash
+git clone https://github.com/yourusername/resepku-golang-app.git
+
 cd resepku-golang-app
 
-# Run the program
 go run main.go
-
 ```
 
-### Main Menu CLI
+### Main Menu
 
-1. Add recipe
-2. Edit recipe
-3. Delete recipe
-4. Search by ingredient
-5. Display all recipes
+```text
+1. Add Recipe
+2. Edit Recipe
+3. Delete Recipe
+4. Search by Ingredient
+5. Display All Recipes
 6. View Statistics
 7. Exit
+```
 
 ---
 
-## 📂 Project Structure
-
-To comply with academic constraints, the app utilizes a modular monolithic approach inside a single file, divided into distinct functional blocks:
+## Project Structure
 
 ```text
 resepku-golang-app/
-├── main.go               # Entry point, loads the menu loop and data array
-│   ├── (Structs)         # Data structures and array limits
-│   ├── (CRUD Logic)      # Functions to add, edit, and delete recipes
-│   ├── (Search Logic)    # Sequential & Binary search implementations
-│   ├── (Sort Logic)      # Selection & Insertion sort implementations
-│   └── (Display Logic)   # UI formatting, statistics, and sub-menus
-└── README.md             # Project documentation
-
+├── main.go
+│   ├── Data Structures
+│   ├── CRUD Operations
+│   ├── Search Algorithms
+│   ├── Sorting Algorithms
+│   └── Display & Statistics
+└── README.md
 ```
 
 ---
 
-## 🗄️ Data Structures
+## Data Structures
 
 ### Recipe
 
-Stores all information regarding a single cooking recipe.
-
 ```go
 type Recipe struct {
-	name             string      // Title of the recipe
-	category         string      // e.g., Dessert, Soup, Main Course
-	ingredients      [100]string // Array of ingredients (Index 0 is Main Ingredient)
-	steps            [100]string // Array of cooking steps
-	countIngredients int         // Total ingredients registered
-	countSteps       int         // Total steps registered
-	cookingTime      int         // Duration in minutes
-	searchCount      int         // Tracker for statistics
+    name             string
+    category         string
+    ingredients      [100]string
+    steps            [100]string
+    countIngredients int
+    countSteps       int
+    cookingTime      int
+    searchCount      int
 }
-
 ```
 
-### Recipe List
-
-The main static database simulating memory storage.
+### Recipe Database
 
 ```go
 const NMAX int = 1000
 
-type recipeList [NMAX]Recipe // Array of 1000 Recipe structs
-
+type recipeList [NMAX]Recipe
 ```
 
 ---
 
-## ⚙️ Algorithms
+## Algorithms Implemented
 
 ### Searching
 
-| Algorithm | Used when | Searches by |
-| --- | --- | --- |
-| **Sequential Search** | Searching via the `[S]` menu option. | Main Ingredient (`ingredients[0]`) |
-| **Binary Search** | Searching via the `[B]` menu option. Requires the array to be sorted first. | Main Ingredient (`ingredients[0]`) |
-| **Binary Search** | Background process during Edit and Delete actions. | Exact Recipe Title (`name`) |
+| Algorithm         | Purpose                                                |
+| ----------------- | ------------------------------------------------------ |
+| Sequential Search | Search recipes by main ingredient                      |
+| Binary Search     | Search recipes by main ingredient after sorting        |
+| Binary Search     | Locate recipes by title for edit and delete operations |
 
 ### Sorting
 
-| Algorithm | Used for | Sorts by |
-| --- | --- | --- |
-| **Selection Sort** | `SortbyNameAscending` & `SortbyNameDescending` | Recipe Title (Alphabetical) |
-| **Selection Sort** | `sortByMainIngredientAscending` | Main Ingredient (Prep for Binary Search) |
-| **Insertion Sort** | `SortbyTimeAscending` & `SortbyTimeDescending` | Cooking Time (Integers) |
+| Algorithm      | Purpose                          |
+| -------------- | -------------------------------- |
+| Selection Sort | Sort recipes alphabetically      |
+| Selection Sort | Sort recipes by main ingredient  |
+| Insertion Sort | Sort recipes by cooking duration |
 
 ---
 
-## 🔄 Application Flow
+## Application Workflow
 
-1. **Adding a Recipe (`addRecipe`)**
-* Checks if the `NMAX` limit is reached.
-* Validates duplicate names using a quick sequential sweep.
-* Prompts user for details, saving `ingredients[0]` explicitly as the "Main Ingredient".
+### Add Recipe
 
+* Validates storage capacity
+* Prevents duplicate recipe names
+* Stores recipe details and ingredients
 
-2. **Editing / Deleting (`editRecipe` / `deleteRecipe`)**
-* Displays all available recipes.
-* Sorts the array alphabetically automatically.
-* Uses Binary Search to pinpoint the exact array index of the requested recipe title.
-* Overwrites data (Edit) or shifts the array elements to the left (Delete).
+### Edit & Delete Recipe
 
+* Sorts recipes alphabetically
+* Uses Binary Search to locate recipes by title
+* Updates or removes selected recipes
 
-3. **Searching (`search`)**
-* Asks the user to input a main ingredient.
-* **Sequential:** Sweeps from index 0 to `n`, incrementing the `searchCount` for every match.
-* **Binary:** Sorts the array by main ingredient first. Halves the data to find a match, then sweeps slightly to the right to catch duplicate main ingredients across different recipes.
+### Search Recipe
 
+* Search by main ingredient
+* Supports Sequential Search and Binary Search
+* Tracks recipe search frequency
 
-4. **Statistics (`viewStatistics`)**
-* Iterates through the data to count categories.
-* Duplicates the main array into a temporary `sorted` array.
-* Sorts the temporary array based on `searchCount` using Selection Sort to display a leaderboard without altering the original database order.
+### View Statistics
 
-
+* Counts recipes by category
+* Displays most searched recipes
+* Uses a temporary sorted copy to preserve original data
 
 ---
 
-## 📜 Functions Documentation
+## Core Functions
 
-Every core function in the codebase is documented using block comments (`/* ... */`) explaining its exact purpose and behavior.
-
-**Core Operations**
-
-| Function | Purpose |
-| --- | --- |
-| `addRecipe` | Validates input and adds a new recipe into the array. |
-| `editRecipe` | Retrieves a recipe by exact name and opens a sub-menu to modify specific fields. |
-| `deleteRecipe` | Locates a recipe by name and shifts array elements to overwrite it. |
-| `viewStatistics` | Tallies category data and ranks recipes based on search frequency. |
-| `printRecipeDetails` | A reusable UI helper to print data cleanly with 50-character alignment. |
+| Function               | Description                             |
+| ---------------------- | --------------------------------------- |
+| `addRecipe()`          | Add a new recipe                        |
+| `editRecipe()`         | Modify an existing recipe               |
+| `deleteRecipe()`       | Remove a recipe                         |
+| `viewStatistics()`     | Display analytics and rankings          |
+| `printRecipeDetails()` | Display recipe information consistently |
 
 ---
 
-## ⚖️ License
+## Learning Outcomes
 
-This project was created for academic purposes.
+This project demonstrates:
 
-```
+* Array-based data management
+* Struct implementation in Go
+* CRUD operations
+* Sequential Search
+* Binary Search
+* Selection Sort
+* Insertion Sort
+* Console application development
+* Basic data analytics and reporting
 
-```
+---
+
+## License
+
+Created for academic purposes.
