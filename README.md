@@ -4,27 +4,38 @@ A console-based recipe management application built with Go that demonstrates fu
 
 ## Team Members
 
+This project was developed collaboratively by both team members, with responsibilities distributed across different components of the application.
+
 ### Naufal Abdurrahman Gumelar
 
-**Role:** Lead Developer, Logic Architecture, Code Review
+**Responsibilities:**
 
-**Contributions:**
-
-* Data structure design and array management
-* Sequential Search and Binary Search implementation
-* Edit and Delete operation constraints
-* Statistics and analytics features
+* Developed and refined sorting algorithms (Selection Sort and Insertion Sort)
+* Implemented search algorithms (Sequential Search and Binary Search)
+* Improved and optimized edit functionality
+* Updated and enhanced overall program logic
+* Contributed to feature improvements and algorithm integration
 
 ### Achmad Ramadhanu Putra Abdi
 
-**Role:** Co-Developer, UI/UX Formatting, Algorithm Testing
+**Responsibilities:**
 
-**Contributions:**
+* Developed the main program structure and menu navigation flow
+* Implemented CRUD operations (Add, Edit, and Delete)
+* Conducted program testing and debugging
+* Fixed syntax and runtime issues throughout development
+* Improved search functionality and user interaction flow
+* Assisted with application documentation and validation
 
-* Selection Sort and Insertion Sort implementation
-* Menu navigation and application flow
-* Console display formatting
-* Documentation and testing
+### Shared Contributions
+
+Both members collaborated on:
+
+* Application design and workflow planning
+* Feature discussion and implementation decisions
+* Testing and verification of program functionality
+* Code review and refinement
+* Final documentation and project presentation
 
 > Final Project for Algoritma Pemrograman 2 - Telkom University
 
