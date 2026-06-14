@@ -50,10 +50,10 @@ func main() {
 		case 3:
 			deleteRecipe(&recipes, &amount)
 		case 4:
-			search(&recipes, amount)
+			searchOption(&recipes, amount)
 		case 5:
 			displayRecipesName(&recipes, amount)
-			displayRecipesNameSubMenu(&recipes, amount)
+			displayRecipesSubMenu(&recipes, amount)
 		case 6:
 			viewStatistics(recipes, amount)
 		case 7:
@@ -275,7 +275,9 @@ func displayRecipesSubMenu(recipes *recipeList, n int) {
 Gives options to sort the data first, either by name or by how fast it takes to cook.
 After sorting, it loops through everything and prints the full details. */
 func displayRecipes(recipes *recipeList, n int) {
-	var i, choice int
+	var i int
+	var status bool
+	var pick, choice string
 
 	if n == 0 {
 		fmt.Println("\n[No recipes to display. Please add some recipes.]")
@@ -318,7 +320,6 @@ func displayRecipes(recipes *recipeList, n int) {
 			case "A", "a":
 				SortbyTimeAscending(recipes, n)
 				for i = 0; i < n; i++ {
-
 					printRecipeDetails(recipes[i])
 				}
 			case "D", "d":
@@ -405,7 +406,7 @@ func SortbyTimeDescending(recipes *recipeList, n int) {
 /* Acts as a gateway for the search feature. We check if the array
 is empty first so we don't waste the user's time. Then it asks whether they want
 to use the basic Sequential search or the faster Binary search. */
-func search(recipes *recipeList, n int) {
+func searchOption(recipes *recipeList, n int) {
 	var choice string
 	var status bool
 
