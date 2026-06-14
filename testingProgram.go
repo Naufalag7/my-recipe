@@ -370,7 +370,7 @@ func SortbyNameDescending(recipes *recipeList, n int) {
 	}
 }
 
-/* For cooking times, use the insertion sort algorithm. Organizing the list
+/* For cooking times, uses the insertion sort algorithm. Organizing the list
 starting from the fastest recipe to cook up to the longest one. */
 func SortbyTimeAscending(recipes *recipeList, n int) {
 	var i, j int
@@ -386,7 +386,7 @@ func SortbyTimeAscending(recipes *recipeList, n int) {
 	}
 }
 
-/* reverse version of the cooking time sort using Insertion Sort.
+/* Reverse version of the cooking time sort using Insertion Sort.
 Puts the recipes that take the longest time to cook at the very top. */
 func SortbyTimeDescending(recipes *recipeList, n int) {
 	var i, j int
@@ -402,7 +402,7 @@ func SortbyTimeDescending(recipes *recipeList, n int) {
 	}
 }
 
-/* acts as a gateway for the search feature. We check if the array
+/* Acts as a gateway for the search feature. We check if the array
 is empty first so we don't waste the user's time. Then it asks whether they want
 to use the basic Sequential search or the faster Binary search. */
 func search(recipes *recipeList, n int) {
