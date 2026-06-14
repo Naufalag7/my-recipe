@@ -52,7 +52,6 @@ func main() {
 		case 4:
 			search(&recipes, amount)
 		case 5:
-			//Uses two functions to make it easier for users if they also want to see the other version
 			displayRecipesName(&recipes, amount)
 			displayRecipesNameSubMenu(&recipes, amount)
 		case 6:
@@ -67,7 +66,7 @@ func main() {
 }
 
 /* Function to let users add a new recipe into the system.
-Checks if our array has reached the NMAXlimit so the program doesn't crash.
+Checks if our array has reached the NMAX limit so the program doesn't crash.
 If there is still space, it asks for the basic info like name and time,
 and then loops to get all the ingredients and cooking steps one by one. */
 func addRecipe(recipes *recipeList, n *int) {
@@ -244,7 +243,7 @@ func displayRecipesName(recipes *recipeList, n int) {
 /* Shows the simple name list.
 Gives the user a chance to quickly sort the names alphabetically (A-Z or Z-A)
 to make it easier to read, or they can just go back to the main menu. */
-func displayRecipesNameSubMenu(recipes *recipeList, n int) {
+func displayRecipesSubMenu(recipes *recipeList, n int) {
 	var choice string
 	var status bool
 
@@ -284,35 +283,56 @@ func displayRecipes(recipes *recipeList, n int) {
 	}
 
 	fmt.Println("\n=======================================")
-	fmt.Println("        RECIPE DISPLAY OPTIONS         ")
+	fmt.Println("           ALL RECIPES DETAILS         ")
 	fmt.Println("=======================================")
-	fmt.Println("1. Sort by name (Ascending)")
-	fmt.Println("2. Sort by name (Descending)")
-	fmt.Println("3. Sort by cooking time (Ascending)")
-	fmt.Println("4. Sort by cooking time (Descending)")
-	fmt.Println("=======================================")
-
-	fmt.Print("Enter your choice: ")
-	fmt.Scan(&choice)
-
-	switch choice {
-	case 1:
-		SortbyNameAscending(recipes, n)
-	case 2:
-		SortbyNameDescending(recipes, n)
-	case 3:
-		SortbyTimeAscending(recipes, n)
-	case 4:
-		SortbyTimeDescending(recipes, n)
-	default:
-		fmt.Println("Invalid choice. Please try again.")
-		return
-	}
-
 	for i = 0; i < n; i++ {
 		printRecipeDetails(recipes[i])
 	}
-	fmt.Println()
+
+	status = true
+	for status {
+		fmt.Println("=======================================")
+		fmt.Print("Sort by Name [N], Time [T], Menu [M] : ")
+		fmt.Scan(&choice)
+
+		switch choice {
+		case "N", "n":
+			fmt.Print("Ascending [A] or Descending [D] : ")
+			fmt.Scan(&pick)
+			switch pick {
+			case "A", "a":
+				for i = 0; i < n; i++ {
+					SortbyNameAscending(recipes, n)
+					printRecipeDetails(recipes[i])
+				}
+			case "D", "d":
+				for i = 0; i < n; i++ {
+					SortbyNameDescending(recipes, n)
+					printRecipeDetails(recipes[i])
+				}
+			}
+		case "T", "t":
+			fmt.Print("Ascending [A] or Descending [D] : ")
+			fmt.Scan(&pick)
+			switch pick {
+			case "A", "a":
+				SortbyTimeAscending(recipes, n)
+				for i = 0; i < n; i++ {
+
+					printRecipeDetails(recipes[i])
+				}
+			case "D", "d":
+				SortbyTimeDescending(recipes, n)
+				for i = 0; i < n; i++ {
+					printRecipeDetails(recipes[i])
+				}
+			}
+		case "M", "m":
+			status = false
+		default:
+			fmt.Println("\n[Invalid choice. Please try again.]")
+		}
+	}
 }
 
 /* standard selection sort algorithm. arranging the recipe list
@@ -532,7 +552,7 @@ func printRecipeDetails(recipe Recipe) {
 	for i = 0; i < recipe.countSteps; i++ {
 		fmt.Printf("  %d. %s\n", i+1, recipe.steps[i])
 	}
-	fmt.Println("-------------------------------")
+	fmt.Print("=")
 }
 
 /* Binary search has a strict rule: the data must be sorted first before searching.
