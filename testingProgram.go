@@ -77,14 +77,14 @@ func addRecipe(recipes *recipeList, n *int) {
 		return
 	}
 
-	fmt.Print("Recipe Name (Use '_' for Spaces): ")
+	fmt.Print("Recipe Name: ")
 	fmt.Scan(&recipes[*n].name)
-	fmt.Print("Category (Use '_' for Spaces): ")
+	fmt.Print("Category : ")
 	fmt.Scan(&recipes[*n].category)
 	fmt.Print("Cooking Time (in minutes): ")
 	fmt.Scan(&recipes[*n].cookingTime)
 
-	fmt.Print("Number of Ingredients (Use '_' for Spaces): ")
+	fmt.Print("Number of Ingredients: ")
 	fmt.Scan(&recipes[*n].countIngredients)
 	for i = 0; i < recipes[*n].countIngredients; i++ {
 		if i == 0 {
@@ -95,7 +95,7 @@ func addRecipe(recipes *recipeList, n *int) {
 		fmt.Scan(&recipes[*n].ingredients[i])
 	}
 
-	fmt.Print("Number of Cooking Steps (Use '_' for Spaces): ")
+	fmt.Print("Number of Cooking Steps: ")
 	fmt.Scan(&recipes[*n].countSteps)
 	for i = 0; i < recipes[*n].countSteps; i++ {
 		fmt.Printf("Step %d: ", i+1)
@@ -113,7 +113,8 @@ Inside the sub menu, user can pick exactly what they want to fix, e.g like repla
 or changing the cooking steps without having to rewrite the whole recipe from scratch. */
 func editRecipe(recipes *recipeList, n int) {
 	var title string
-	var choice, ingredientNumber, i, index int
+	var choice, ingredientNumber, stepNumber, i, index int
+	var isFound, isEditing bool
 
 	if n == 0 {
 		fmt.Println("\n[No recipes to edit. Please add some recipes first.]")
@@ -122,18 +123,30 @@ func editRecipe(recipes *recipeList, n int) {
 
 	displayRecipesName(recipes, n)
 	fmt.Println("=======================================")
-	fmt.Print("\nEnter the exact name of the Recipe to edit: ")
-	fmt.Scan(&title)
+	fmt.Println("\n[ENTER EXACT NAME OR TYPE 'M' FOR MAIN MENU]")
 
-	SortbyNameAscending(recipes, n)
-	index = findIndexRecipe(recipes, n, title)
+	isFound = false
+	for !isFound {
+		fmt.Print("\nRecipe to edit: ")
+		fmt.Scan(&title)
 
-	if index == -1 {
-		fmt.Println("\n[Recipe not found.]")
-		return
+		if title == "M" || title == "m" {
+			fmt.Println("Returning to Main Menu...")
+			return
+		}
+
+		SortbyNameAscending(recipes, n)
+		index = findIndexRecipe(recipes, n, title)
+
+		if index != -1 {
+			isFound = true
+		} else {
+			fmt.Println("[Recipe not found. Put the valid name]")
+		}
 	}
 
-	for {
+	isEditing = true
+	for isEditing {
 		fmt.Println("\n=======================================")
 		fmt.Println("Edit recipe:", recipes[index].name)
 		fmt.Println("=======================================")
@@ -148,7 +161,7 @@ func editRecipe(recipes *recipeList, n int) {
 
 		switch choice {
 		case 1:
-			fmt.Print("New Title (Use '_' for Spaces]: ")
+			fmt.Print("New Title: ")
 			fmt.Scan(&recipes[index].name)
 			fmt.Println("Title changed.")
 		case 2:
@@ -166,7 +179,7 @@ func editRecipe(recipes *recipeList, n int) {
 					fmt.Print("Enter ingredient number to change: ")
 					fmt.Scan(&ingredientNumber)
 				}
-				fmt.Print("Enter the new ingredient (Use '_' for Spaces): ")
+				fmt.Print("Enter the new ingredient: ")
 				fmt.Scan(&recipes[index].ingredients[ingredientNumber-1])
 				fmt.Println("Ingredient updated.")
 			}
@@ -175,15 +188,27 @@ func editRecipe(recipes *recipeList, n int) {
 			fmt.Scan(&recipes[index].cookingTime)
 			fmt.Println("Cooking time updated.")
 		case 4:
-			fmt.Print("Enter new cooking steps (Use '_' for Spaces): ")
-			for i = 0; i < recipes[index].countSteps; i++ {
-				fmt.Printf("Step %d: ", i+1)
-				fmt.Scan(&recipes[index].steps[i])
+			if recipes[index].countSteps == 0 {
+				fmt.Println("This recipe has no steps.")
+			} else {
+				fmt.Printf("\nCurrent [%s] Steps:\n", recipes[index].name)
+				for i = 0; i < recipes[index].countSteps; i++ {
+					fmt.Printf("Step %d: %s\n", i+1, recipes[index].steps[i])
+				}
+				fmt.Print("Enter step number to change: ")
+				fmt.Scan(&stepNumber)
+				for stepNumber < 1 || stepNumber > recipes[index].countSteps {
+					fmt.Println("Invalid step number.")
+					fmt.Print("Enter step number to change: ")
+					fmt.Scan(&stepNumber)
+				}
+				fmt.Printf("Enter new step %d: ", stepNumber)
+				fmt.Scan(&recipes[index].steps[stepNumber-1])
+				fmt.Println("Cooking step updated.")
 			}
-			fmt.Println("Cooking steps updated.")
 		case 5:
 			fmt.Println("Finished editing recipe.")
-			return
+			isEditing = false
 		default:
 			fmt.Println("Invalid choice. Please try again.")
 		}
@@ -464,8 +489,9 @@ func viewStatistics(recipes recipeList, n int) {
 	var categories [NMAX]string
 	var categoryCounts [NMAX]int
 	var sorted [NMAX]Recipe
-	var found, hasSearch bool
+	var found, hasSearch, status bool
 	var temp Recipe
+	var choice string
 
 	if n == 0 {
 		fmt.Println("\n[No recipe data available yet]")
@@ -529,16 +555,30 @@ func viewStatistics(recipes recipeList, n int) {
 			}
 		}
 	}
+
+	status = true
+	for status {
+		fmt.Println("\n=======================================")
+		fmt.Print("Main Menu [M] : ")
+		fmt.Scan(&choice)
+		
+		if choice == "M" || choice == "m" {
+			status = false
+		} else {
+			fmt.Println("Invalid input. Please try again.")
+		}
+	}
 }
 
 /* Helper function to print the full recipe details */
 func printRecipeDetails(recipe Recipe) {
 	var i int
 
-	fmt.Println()
+	fmt.Println("\n=======================================")
 	fmt.Printf("Recipe: %s\n", recipe.name)
 	fmt.Printf("Category: %s\n", recipe.category)
 	fmt.Printf("Cooking time: %d minutes\n", recipe.cookingTime)
+	fmt.Println("=======================================")
 
 	fmt.Printf("Ingredients:\n")
 	for i = 0; i < recipe.countIngredients; i++ {
@@ -549,11 +589,12 @@ func printRecipeDetails(recipe Recipe) {
 		}
 	}
 
+	fmt.Println("=======================================")
 	fmt.Printf("Steps:\n")
 	for i = 0; i < recipe.countSteps; i++ {
 		fmt.Printf("  %d. %s\n", i+1, recipe.steps[i])
 	}
-	fmt.Print("=")
+	fmt.Println("=======================================")
 }
 
 /* Binary search has a strict rule: the data must be sorted first before searching.
@@ -584,7 +625,7 @@ func searchByIngredientSequential(recipes *recipeList, n int) {
 	var found, i int
 
 	found = 0
-	fmt.Print("\nEnter main ingredient to search [Use _ for spacing]: ")
+	fmt.Print("\nEnter main ingredient to search: ")
 	fmt.Scan(&ingredient)
 
 	for i = 0; i < n; i++ {
@@ -611,7 +652,7 @@ func searchByIngredientBinary(recipes *recipeList, n int) {
 	var found, mid, left, right int
 
 	found = 0
-	fmt.Print("\nEnter main ingredient to search [Use _ for spacing]: ")
+	fmt.Print("\nEnter main ingredient to search: ")
 	fmt.Scan(&ingredient)
 
 	sortByMainIngredientAscending(recipes, n)
